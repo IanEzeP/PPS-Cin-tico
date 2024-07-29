@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ion-content {
+    --background: var(--ion-color-secondary);
+    --overflow: hidden;
+}
+
+ion-toolbar {
+    position: relative;
+}
+
+ion-button.logout {
+    position: absolute;
+    left: 0;
+    top: 0;
+    
+    height: 100%;
+
+    ion-icon {
+        color: #ffffffea;
+    }
+}
+
+h1 {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-size: 30px;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-color);
+    color: #ffffffea;
+}

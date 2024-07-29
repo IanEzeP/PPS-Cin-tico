@@ -1,0 +1,38 @@
+ion-content {
+    --background: var(--ion-color-dark);
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+@-webkit-keyframes rotate-scale-down{0%{-webkit-transform:scale(1) rotateZ(0);transform:scale(1) rotateZ(0)}50%{-webkit-transform:scale(.5) rotateZ(180deg);transform:scale(.5) rotateZ(180deg)}100%{-webkit-transform:scale(1) rotateZ(360deg);transform:scale(1) rotateZ(360deg)}}@keyframes rotate-scale-down{0%{-webkit-transform:scale(1) rotateZ(0);transform:scale(1) rotateZ(0)}50%{-webkit-transform:scale(.5) rotateZ(180deg);transform:scale(.5) rotateZ(180deg)}100%{-webkit-transform:scale(1) rotateZ(360deg);transform:scale(1) rotateZ(360deg)}};
+.logo {
+    height: 120px;
+    margin-top: 50%;
+    -webkit-animation:rotate-scale-down 1s linear both;animation:rotate-scale-down 1s linear both;
+}
+
+@-webkit-keyframes slide-bck-right{0%{-webkit-transform:translateZ(0) translateX(0);transform:translateZ(0) translateX(0)}100%{-webkit-transform:translateZ(-400px) translateX(800px);transform:translateZ(-400px) translateX(800px)}}@keyframes slide-bck-right{0%{-webkit-transform:translateZ(0) translateX(0);transform:translateZ(0) translateX(0)}100%{-webkit-transform:translateZ(-400px) translateX(800px);transform:translateZ(-400px) translateX(400px)}};
+.txt1 {
+    margin-top: 30%;
+
+    background-color: var(--primary-color);
+    color: white;
+
+    font-size: 30px;
+
+    -webkit-animation:slide-bck-right .45s cubic-bezier(.47,0.000,.745,.715) 1s both;animation:slide-bck-right .8s cubic-bezier(.47,0.000,.745,.715) 0.5s both;
+}
+
+@-webkit-keyframes slide-bck-left{0%{-webkit-transform:translateZ(0) translateX(0);transform:translateZ(0) translateX(0)}100%{-webkit-transform:translateZ(-400px) translateX(-200px);transform:translateZ(-400px) translateX(-200px)}}@keyframes slide-bck-left{0%{-webkit-transform:translateZ(0) translateX(0);transform:translateZ(0) translateX(0)}100%{-webkit-transform:translateZ(-400px) translateX(-200px);transform:translateZ(-400px) translateX(-400px)}};
+.txt2 {
+    margin-top: 30%;
+
+    background-color: var(--primary-color);
+    color: white;
+
+    font-size: 30px;
+    -webkit-animation:slide-bck-left .45s cubic-bezier(.47,0.000,.745,.715) 1s both;animation:slide-bck-left .8s cubic-bezier(.47,0.000,.745,.715) 0.5s both;
+}

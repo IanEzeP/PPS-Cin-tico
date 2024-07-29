@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+ion-content {
+    --background: var(--ion-color-dark);
+    --overflow: hidden;
+}
+
+ion-segment {
+    --background: var(--ion-color-light);
+}
+
+h1 {
+    margin-bottom: 50px;
+    margin-left: 10px;
+    font-size: 30px;
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--primary-color);
+    color: whitesmoke;
+}
+
+div.menu {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+div.graph {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin-top: 4rem;
+}

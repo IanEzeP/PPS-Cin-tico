@@ -1,0 +1,24 @@
+<ion-toolbar color="primary">
+  <ion-button class="logout" aria-label="Logout" (click)="this.cerrarSesion()">
+    <ion-icon aria-hidden="true" name="log-out-outline" size="large"></ion-icon>
+  </ion-button>
+  <h1>{{ this.seccion }}</h1>
+</ion-toolbar>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="camara" href="/menu/camara" (click)="this.cambioTab('Cámara')">
+      <ion-icon aria-hidden="true" name="camera" size="large"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="fotos" href="/menu/fotos" (click)="this.cambioTab('Fotos')">
+      <ion-icon aria-hidden="true" name="images" size="large"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="graficos" href="/menu/graficos" (click)="this.cambioTab('Calificación')">
+      <ion-icon aria-hidden="true" name="podium" size="large"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
+

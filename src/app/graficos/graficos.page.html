@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="menu">
+    <ion-segment value="lindo" color="warning" (ionChange)="onChangeChart($event)">
+      <ion-segment-button value="lindo">
+        <ion-label>Lo más lindo</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="feo">
+        <ion-label>Lo más feo</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div class="graph">
+      <div *ngIf="this.smt == true, then torta else barras"></div>
+        <ng-template #torta>
+          <h1>Lo más lindo del edificio</h1>
+          <canvasjs-chart 
+          [options]="chartOptionsPie" [styles]="{width: '100%', height:'450px'}"
+          (chartInstance)="getChartInstance($event)"></canvasjs-chart>
+        </ng-template>
+
+        <ng-template #barras>
+          <h1>Lo más feo del edificio</h1>
+          <canvasjs-chart 
+          [options]="chartOptionsCol" [styles]="{ width: '100%', height:'55%' }" 
+          (chartInstance)="getChartInstance($event)"></canvasjs-chart>
+        </ng-template>
+    </div>
+  </div>
+</ion-content>
