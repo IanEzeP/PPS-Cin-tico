@@ -20,6 +20,10 @@ const routes: Routes = [
         loadChildren: () => import('../graficos/graficos.module').then(m => m.GraficosPageModule)
       },
       {
+        path: 'profile',
+        loadChildren: () => import('../profile/profile.module').then( m => m.ProfilePageModule)
+      },
+      {
         path: '',
         redirectTo: '/menu/camara',
         pathMatch: 'full'

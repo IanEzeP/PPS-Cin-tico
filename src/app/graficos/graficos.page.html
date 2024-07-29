@@ -15,7 +15,7 @@
     </ion-segment>
 
     <div class="graph">
-      <div *ngIf="this.smt == true, then torta else barras"></div>
+      <div *ngIf="this.viewLindas == true, then torta else barras"></div>
         <ng-template #torta>
           <h1>Lo más lindo del edificio</h1>
           <canvasjs-chart 

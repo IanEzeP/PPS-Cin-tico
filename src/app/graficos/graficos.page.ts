@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { DatabaseService } from '../services/database.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-graficos',
@@ -9,9 +10,10 @@ import { DatabaseService } from '../services/database.service';
 })
 export class GraficosPage implements OnInit, OnDestroy {
 
-  public smt: boolean = true;
+  public viewLindas: boolean = true;
   public fotosLindas: Array<any> = [];
   public fotosFeas: Array<any> = [];
+  public arrayFotos: Array<any> = [];
 
   private obsDatabase: Subscription = Subscription.EMPTY;
 
@@ -20,17 +22,15 @@ export class GraficosPage implements OnInit, OnDestroy {
 
   constructor(private data: DatabaseService) { }
 
-  ngOnInit() 
-  {
+  ngOnInit() {
     console.log("Entro en gráficos");
       
-    this.obsDatabase = this.data.getCollectionObservable('fotos-edificio').subscribe((next: any) =>
-    {
-      let result: Array<any> = next;
+    this.obsDatabase = this.data.getCollectionObservable('fotos-edificio').subscribe((next: any) => {
+      this.arrayFotos = next;
       this.fotosFeas = [];
       this.fotosLindas = [];
       
-      result.forEach((obj: any) => {
+      this.arrayFotos.forEach((obj: any) => {
         obj.fecha = new Date(obj.fecha.seconds * 1000);
 
         if(obj.tipo == 'linda')
@@ -57,40 +57,38 @@ export class GraficosPage implements OnInit, OnDestroy {
   {
     if(selection.target.value == 'lindo')
     {
-      this.smt = true;
+      this.viewLindas = true;
     }
     else
     {
-      this.smt = false;
+      this.viewLindas = false;
     }
   }
 
-  crearSeries()
-  {
+  crearSeries() {
     this.seriesPie = [];
     this.seriesCol = [];
 
-    for (let i = 0; i < this.fotosLindas.length; i++) 
-    {
+    for (let i = 0; i < this.fotosLindas.length; i++) {
       const element = this.fotosLindas[i];
       
       this.seriesPie.push({ 
         y: element.votos, 
         name: element.usuario + ' ' + element.fecha.toLocaleDateString() + 
-        ' ' + element.fecha.toLocaleTimeString(), 
+        ' ' + element.fecha.toLocaleTimeString(),
+        id: element.id_foto
       });
     }
 
-    for (let i = 0; i < this.fotosFeas.length; i++) 
-    {
+    for (let i = 0; i < this.fotosFeas.length; i++) {
       const element = this.fotosFeas[i];
       
-      if(element.votos > 0)
-      {
+      if (element.votos > 0) {
         this.seriesCol.push({ 
         label: element.usuario + ' ' + element.fecha.toLocaleDateString() + 
         ' ' + element.fecha.toLocaleTimeString(),
-        y: element.votos, 
+        y: element.votos,
+        id: element.id_foto 
         });
       }
 
@@ -98,20 +96,15 @@ export class GraficosPage implements OnInit, OnDestroy {
     this.updateChart();
   }
 
-  getChartInstance(chart : Object) 
-  {
+  getChartInstance(chart : Object) {
     this.chart = chart;
     this.updateChart();
   }
 
-  updateChart()
-  { 
-    if(this.smt)
-    {
+  updateChart() { 
+    if (this.viewLindas) {
       this.chart.options.data[0].dataPoints = this.seriesPie;
-    }
-    else
-    {
+    } else {
       this.chart.options.data[0].dataPoints = this.seriesCol;
     }
 
@@ -120,12 +113,28 @@ export class GraficosPage implements OnInit, OnDestroy {
     elementoCanva?.remove();
   }
 
+  onClickResult(e : any) {
+    const foto = this.arrayFotos.find(foto => foto.id_foto == e.dataPoint.id);
+
+    if (foto != undefined) {
+      Swal.fire({
+        heightAuto: false,
+        text: `Autor: ${foto.usuario} - Fecha: ${foto.fecha.toLocaleDateString()} ${foto.fecha.toLocaleTimeString()}`,
+        imageUrl: foto.imagen,
+        imageHeight: "350px",
+        imageWidth: "350",
+        showConfirmButton: false,
+      });
+    }
+  }
+
   private chart : any;
 
   public chartOptionsPie = {
-    animationEnabled: true,
-    theme: "dark2", //Con esto consigo fondo del gráfico negro
+    //animationEnabled: true,
+    theme: "dark2",
 	  data: [{
+      click: (e : any) => this.onClickResult(e),
       type: "pie",
       startAngle: 0,
       indexLabelPlacement: "inside",
@@ -140,7 +149,8 @@ export class GraficosPage implements OnInit, OnDestroy {
     theme: "dark2",
     axisY: { title: "Votos", interval: 1 },
     axisX: { labelAngle: 0 },
-    data: [{        
+    data: [{
+      click: (e : any) => this.onClickResult(e),
       type: "column",
       dataPoints: [
       ]

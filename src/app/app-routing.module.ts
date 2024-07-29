@@ -15,8 +15,7 @@ const routes: Routes = [
   {
     path: 'anim-splash',
     loadChildren: () => import('./anim-splash/anim-splash.module').then( m => m.AnimSplashPageModule)
-  },
-
+  }
 ];
 @NgModule({
   imports: [
