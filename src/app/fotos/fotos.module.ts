@@ -8,7 +8,14 @@ import { FotosPageRoutingModule } from './fotos-routing.module';
 
 import { FotosPage } from './fotos.page';
 
+import { DeviceMotion } from '@ionic-native/device-motion/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+
 @NgModule({
+  providers: [
+    DeviceMotion,
+    ScreenOrientation
+  ],
   imports: [
     CommonModule,
     FormsModule,

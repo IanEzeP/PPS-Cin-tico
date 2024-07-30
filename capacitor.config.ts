@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'pps.iep.relevar',
-  appName: 'Relevamiento',
+  appId: 'pps.iep.cinetico',
+  appName: 'Visualizador Cinético',
   webDir: 'www'
 };
 

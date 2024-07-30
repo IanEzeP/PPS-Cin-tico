@@ -1,8 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { IonContent } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { DatabaseService } from '../services/database.service';
 import { AuthService } from '../services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
 
 @Component({
   selector: 'app-fotos',
@@ -10,29 +13,56 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
   styleUrls: ['./fotos.page.scss'],
 })
 export class FotosPage implements OnInit, OnDestroy {
+  @ViewChild(IonContent) content!: IonContent;
 
   public loaded: boolean = false;
   public fotos: Array<any> = [];
   public placeholderArray: Array<any> = Array(6);
 
-  private obsDatabase: Subscription = Subscription.EMPTY;
+  private subsDatabase: Subscription = Subscription.EMPTY;
+  private subsMovement: Subscription = Subscription.EMPTY;
 
-  constructor(public auth: AuthService, private data: DatabaseService, private firestore: AngularFirestore) { }
+  public posicionActualCelular = 'actual';
+  public posicionAnteriorCelular = 'anterior';
+  public accelerationX: any;
+  public accelerationY: any;
+  public accelerationZ: any;
 
-  ngOnInit() 
-  {
-    console.log("Entro en fotos")
-    this.obsDatabase = this.data.getCollectionObservable('fotos-edificio').subscribe((next: any) =>
-    {
+  constructor(public auth: AuthService, private data: DatabaseService, private firestore: AngularFirestore,
+    public screenOrientation: ScreenOrientation, public deviceMotion: DeviceMotion) { }
+
+  scrollUp() {
+    this.content.scrollByPoint(0,-720,500);
+  }
+  
+  scrollDown() {
+    this.content.scrollByPoint(0,720,500);
+  }
+
+  scrollTop() {
+    this.content.scrollToTop(620);
+  }
+
+  ngOnInit() {
+    console.log("Entro en fotos");
+    this.subsDatabase = this.data.getCollectionObservable('fotos-edificio').subscribe((next: any) => {
       let result: Array<any> = next;
       this.fotos = [];
-      result.sort((a, b) => b.fecha.seconds - a.fecha.seconds);
+      result.sort((a, b) => {
+        let result = b.fecha.seconds - a.fecha.seconds;
+
+        if (result == 0) {
+          result = b.fecha.nanoseconds - a.fecha.nanoseconds;
+        }
+        return result;
+      });
+
       result.forEach((obj: any) => {
-        let fecha = new Date(obj.fecha.seconds * 1000).toLocaleDateString();
+        
+        let fecha = new Date(obj.fecha.seconds * 1000);
         let linda = false;
 
-        if(obj.tipo == 'linda')
-        {
+        if (obj.tipo == 'linda') {
           linda = true;
         }
 
@@ -54,21 +84,59 @@ export class FotosPage implements OnInit, OnDestroy {
       console.log("finalizo carga");
       this.loaded = true;
     });
+
+    this.detectMovement();
   }
 
-  ngOnDestroy(): void 
-  {
-    this.obsDatabase.unsubscribe();
+  ngOnDestroy(): void {
+    this.subsDatabase.unsubscribe();
+    this.subsMovement.unsubscribe();
   }
 
-  onVotar(foto: any): void
-  {
+  ionViewWillLeave () {
+    this.subsMovement.unsubscribe();
+  }
+
+  detectMovement() {      
+    console.log(`Inicio deteccion de movimiento`);
+
+    this.subsMovement = this.deviceMotion.watchAcceleration({ frequency: 300 }).subscribe((acceleration: DeviceMotionAccelerationData) => {
+
+      this.accelerationX = Math.floor(acceleration.x);
+      this.accelerationY = Math.floor(acceleration.y);
+      this.accelerationZ = Math.floor(acceleration.z);
+
+      console.log(`Acelerómetro: X: ${this.accelerationX} Y: ${this.accelerationY} Z: ${this.accelerationZ}`);
+
+      if (acceleration.x > 8) {
+        //Inclinacion Izquierda
+        this.posicionAnteriorCelular = this.posicionActualCelular;
+        this.posicionActualCelular = 'izquierda';
+        this.scrollUp();
+      }
+      else if (acceleration.x < -8) {
+        //Inclinacion Derecha
+        this.posicionAnteriorCelular = this.posicionActualCelular;
+        this.posicionActualCelular = 'derecha';
+        this.scrollDown();
+      }
+      //No se si necesito esto 
+      else if (acceleration.z >= 9 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1)) {
+        
+        this.posicionActualCelular = 'plano';
+        this.scrollTop();
+        //this.movimientoHorizontal();
+      }
+      //console.log('Actual: ' + this.posicionActualCelular + ' Anterior: ' + this.posicionAnteriorCelular);
+    });
+  }
+
+  onVotar(foto: any): void {
     let votado: boolean = false;
 
     votado = foto.votantes.includes(this.auth.id);
 
-    if(!votado)
-    {
+    if (!votado) {
       foto.votantes.push(this.auth.id);
 
       const newFoto = this.firestore.doc('fotos-edificio/' + foto.id_foto);
@@ -76,9 +144,7 @@ export class FotosPage implements OnInit, OnDestroy {
         votos : foto.votos + 1,
         votantes : foto.votantes
       }).catch(error => { console.log(error); });
-    }
-    else
-    {
+    } else {
       foto.votantes.splice(foto.votantes.indexOf(this.auth.id), 1);
 
       const newFoto = this.firestore.doc('fotos-edificio/' + foto.id_foto);

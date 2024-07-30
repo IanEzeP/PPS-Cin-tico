@@ -59,7 +59,7 @@ export class AlertService {
       {
         heightAuto: false,
         icon: 'error',
-        title: mensaje,
+        title: titulo,
         text: mensaje,
       });
   }

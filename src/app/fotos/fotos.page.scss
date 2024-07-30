@@ -11,3 +11,8 @@ ion-skeleton-text.button {
 ion-list {
   background-color: #ffffff00;
 }
+
+div[slot='fixed'] {
+  top: 90%;
+  right: 150px;
+}

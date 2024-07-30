@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 })
 export class CamaraPage implements OnInit {
 
-  //public rutasImagen: Array<string> = [];
+  public idImagen: Array<string> = [];
   public arrayPhotos: Array<Photo> = [];
   public fotosGuardadas: number = 0;
 
@@ -21,9 +21,7 @@ export class CamaraPage implements OnInit {
     private firestore: AngularFirestore, private firestorage: AngularFireStorage) { }
 
   ngOnInit() {
-    this.fotosGuardadas = 0;
-    //this.rutasImagen = [];
-    this.arrayPhotos = [];
+    this.reset();
   }
 
   async tomarFoto(tipo: string) {
@@ -40,7 +38,16 @@ export class CamaraPage implements OnInit {
 
       this.arrayPhotos.push(image);
 
-      Swal.fire('Su foto se guardó correctamente, ¿Desea subir otra imágen?', image.webPath, 'question').then(result => {
+      await Swal.fire({
+        title: 'Su foto se guardó correctamente, ¿Desea subir otra imágen?',
+        heightAuto: false,
+        imageUrl: image.webPath,
+        imageHeight: "350px",
+        imageWidth: "350",
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: 'Si'
+      }).then(result => {
         if (result.isDenied) {
           finish = true;
         }
@@ -48,10 +55,10 @@ export class CamaraPage implements OnInit {
     } while (finish == false);
 
     if (this.arrayPhotos.length > 1) {
-      this.arrayPhotos.forEach(image => {
-        this.alert.waitAlert('Publicando fotos...', `Progreso: ${this.fotosGuardadas + 1}/${this.arrayPhotos.length}`);
+      this.arrayPhotos.forEach(async image => {
+        this.alert.waitAlert('Publicando fotos...', `Esto puede demorar unos segundos`);
 
-        this.subirFotoPerfil(tipo, image);
+        await this.subirFotoPerfil(tipo, image);
       });
     } else {
       this.alert.waitAlert('Publicando foto...', 'Esto puede demorar unos segundos');
@@ -63,8 +70,6 @@ export class CamaraPage implements OnInit {
   async subirFotoPerfil(tipo : string, file : any) {
     if (file) {
       if (file.format == 'jpg' || file.format == 'jpeg' || file.format == 'png' || file.format == 'jfif') {
-
-        let id_imagen = this.firestore.createId();
         let fecha = new Date();
 
         const response = await fetch(file.webPath!);
@@ -74,10 +79,11 @@ export class CamaraPage implements OnInit {
         const uploadTask = await this.firestorage.upload(path, blob); 
         const url = await uploadTask.ref.getDownloadURL();
 
-        //this.rutasImagen.push(url);
-        this.fotosGuardadas++;
-        
+        let id_imagen = this.firestore.createId();
+        this.idImagen.push(id_imagen);
+
         const documento = this.firestore.doc("fotos-edificio/" + id_imagen);
+
         documento.set({
           imagen : url,
           tipo: tipo,
@@ -87,9 +93,13 @@ export class CamaraPage implements OnInit {
           votantes: new Array(0),
           fecha: fecha,
           votos: 0
+        }).then(() => {
+          this.fotosGuardadas++;
+          
+          if (this.fotosGuardadas == this.arrayPhotos.length) {
+            this.validarGuardado();
+          }
         });
-
-        this.validarGuardado(documento.ref.id);
       } else {
         this.alert.failureAlert("ERROR", "Formato de archivo incompatible");
       }
@@ -98,22 +108,42 @@ export class CamaraPage implements OnInit {
     }
   }
 
-  validarGuardado(id : string) {
+  validarGuardado() {
+    console.log("Entro en validar Guardado");
+
     this.firestore.firestore.collection('fotos-edificio').get().then((next : any) => {
-      let result : Array<any> = next;
+      let result : Array<any> = next.docs;
+      let count = 0;
       let exito = false;
 
-      result.forEach(obj => {
-        if (id == obj.id) {
-          exito = true;
-          this.alert.sweetAlert("¡Listo!", "Tu foto ya fue publicada", 'success');
-          return;
+      this.idImagen.forEach(id => {
+        let res = result.find(doc => id == doc.id);
+
+        if (res != undefined) {
+          count++;
         }
       });
 
+      if (count == this.fotosGuardadas) {
+        exito = true;
+        this.alert.sweetAlert("¡Listo!", "Publicación completada", 'success');
+        this.reset();
+      }
+
       if (exito == false) {
         this.alert.failureAlert("ERROR", "Tu foto no pudo publicarse, intente de nuevo más tarde.");
+        this.reset();
       }
-    }).catch(error => { this.alert.failureAlert("ERROR", error);});
+    })
+    .catch(error => { 
+      this.alert.failureAlert("ERROR", error);
+      this.reset();
+    });
+  }
+
+  reset () {
+    this.fotosGuardadas = 0;
+    this.idImagen = [];
+    this.arrayPhotos = [];
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { DatabaseService } from '../services/database.service';
 import Swal from 'sweetalert2';
+//import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 
 @Component({
   selector: 'app-graficos',
@@ -72,12 +73,14 @@ export class GraficosPage implements OnInit, OnDestroy {
     for (let i = 0; i < this.fotosLindas.length; i++) {
       const element = this.fotosLindas[i];
       
-      this.seriesPie.push({ 
-        y: element.votos, 
-        name: element.usuario + ' ' + element.fecha.toLocaleDateString() + 
-        ' ' + element.fecha.toLocaleTimeString(),
-        id: element.id_foto
-      });
+      if (element.votos > 0) {
+        this.seriesPie.push({ 
+          y: element.votos, 
+          name: element.usuario + ' ' + element.fecha.toLocaleDateString(),
+          id: element.id_foto
+        });
+      }
+      
     }
 
     for (let i = 0; i < this.fotosFeas.length; i++) {
@@ -85,8 +88,7 @@ export class GraficosPage implements OnInit, OnDestroy {
       
       if (element.votos > 0) {
         this.seriesCol.push({ 
-        label: element.usuario + ' ' + element.fecha.toLocaleDateString() + 
-        ' ' + element.fecha.toLocaleTimeString(),
+        label: element.usuario + ' ' + element.fecha.toLocaleDateString(),
         y: element.votos,
         id: element.id_foto 
         });

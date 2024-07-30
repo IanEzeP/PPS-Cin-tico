@@ -8,7 +8,13 @@ import { ProfilePageRoutingModule } from './profile-routing.module';
 
 import { ProfilePage } from './profile.page';
 
+import { DeviceMotion } from '@ionic-native/device-motion/ngx';
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 @NgModule({
+  providers: [
+    DeviceMotion,
+    ScreenOrientation
+  ],
   imports: [
     CommonModule,
     FormsModule,

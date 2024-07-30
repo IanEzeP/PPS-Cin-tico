@@ -4,6 +4,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div slot="fixed">
+    <ion-button (click)="scrollUp()">Up</ion-button>
+    <ion-button (click)="scrollDown()">Down</ion-button>
+    <ion-button (click)="scrollTop()">Top</ion-button>
+  </div>
   <div>
 
     <ion-list *ngIf="this.loaded">
@@ -11,14 +16,14 @@
       [ngStyle]="{'box-shadow': imagen.tipo ? '0px 2px 5px rgba(0, 255, 0, 0.2)' : '0px 2px 5px rgba(255, 0, 0, 0.2)'}">
         
         <ion-card-header>
-          <ion-card-title>Compartiste cosa {{ imagen.tipo_texto }} del edificio:</ion-card-title>
+          <ion-card-title style="font-weight: 600;">Compartiste cosa {{ imagen.tipo_texto }} del edificio</ion-card-title>
         </ion-card-header>
 
         <ion-card-content>
-          Publicado el  {{ imagen.fecha }}
+          Publicado el  {{ imagen.fecha | date:'dd/MM/yyyy' }}
         </ion-card-content>
 
-        <img src="{{ imagen.imagen }}" />
+        <img src="{{ imagen.imagen }}" style="margin: auto; display: block;" width="380" height="535" />
 
         <ion-button fill="clear" aria-label="voto" (click)="this.onVotar(imagen)">
 
@@ -41,7 +46,7 @@
             <ion-skeleton-text [animated]="true" style="width: 35%;"></ion-skeleton-text>
           </ion-card-subtitle>
         </ion-card-header>
-        <ion-skeleton-text [animated]="true" style="width: 380px; height: 190px;"></ion-skeleton-text>
+        <ion-skeleton-text [animated]="true" style="width: 380px; height: 535;"></ion-skeleton-text>
         <ion-card-content>
           <ion-skeleton-text class="button" [animated]="true"></ion-skeleton-text>
         </ion-card-content>
