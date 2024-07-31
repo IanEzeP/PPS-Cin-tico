@@ -58,7 +58,6 @@ export class FotosPage implements OnInit, OnDestroy {
       });
 
       result.forEach((obj: any) => {
-        
         let fecha = new Date(obj.fecha.seconds * 1000);
         let linda = false;
 
@@ -85,7 +84,6 @@ export class FotosPage implements OnInit, OnDestroy {
       this.loaded = true;
     });
 
-    this.detectMovement();
   }
 
   ngOnDestroy(): void {
@@ -93,7 +91,11 @@ export class FotosPage implements OnInit, OnDestroy {
     this.subsMovement.unsubscribe();
   }
 
-  ionViewWillLeave () {
+  ionViewDidEnter() {
+    this.detectMovement();
+  }
+  
+  ionViewWillLeave() {
     this.subsMovement.unsubscribe();
   }
 
@@ -108,26 +110,31 @@ export class FotosPage implements OnInit, OnDestroy {
 
       console.log(`Acelerómetro: X: ${this.accelerationX} Y: ${this.accelerationY} Z: ${this.accelerationZ}`);
 
-      if (acceleration.x > 8) {
-        //Inclinacion Izquierda
-        this.posicionAnteriorCelular = this.posicionActualCelular;
+      if (acceleration.x > 5) {
         this.posicionActualCelular = 'izquierda';
-        this.scrollUp();
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollUp();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
       }
-      else if (acceleration.x < -8) {
-        //Inclinacion Derecha
-        this.posicionAnteriorCelular = this.posicionActualCelular;
+      else if (acceleration.x < -5) {
         this.posicionActualCelular = 'derecha';
-        this.scrollDown();
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollDown();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
       }
-      //No se si necesito esto 
-      else if (acceleration.z >= 9 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1)) {
-        
-        this.posicionActualCelular = 'plano';
-        this.scrollTop();
-        //this.movimientoHorizontal();
+      else if (acceleration.y >= 8) {
+        this.posicionAnteriorCelular = this.posicionActualCelular;
+        this.posicionActualCelular = 'parado';
       }
-      //console.log('Actual: ' + this.posicionActualCelular + ' Anterior: ' + this.posicionAnteriorCelular);
+      else if (acceleration.z >= 8 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1)) {
+        this.posicionActualCelular = 'acostado';
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollTop();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
+      }
     });
   }
 

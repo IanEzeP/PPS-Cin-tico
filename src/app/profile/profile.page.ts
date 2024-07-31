@@ -22,12 +22,14 @@ export class ProfilePage implements OnInit, OnDestroy {
   private subsDatabase: Subscription = Subscription.EMPTY;
   private subsMovement: Subscription = Subscription.EMPTY;
 
+  public posicionActualCelular = 'actual';
+  public posicionAnteriorCelular = 'anterior';
   public accelerationX: any;
   public accelerationY: any;
   public accelerationZ: any;
+
   constructor(public auth: AuthService, private data: DatabaseService, private firestore: AngularFirestore,
-    public screenOrientation: ScreenOrientation, public deviceMotion: DeviceMotion
-  ) { }
+    public screenOrientation: ScreenOrientation, public deviceMotion: DeviceMotion) { }
 
   scrollUp() {
     this.content.scrollByPoint(0,-680,500);
@@ -59,8 +61,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         let fecha = new Date(obj.fecha.seconds * 1000);
         let linda = false;
 
-        if(obj.tipo == 'linda')
-        {
+        if(obj.tipo == 'linda') {
           linda = true;
         }
 
@@ -83,16 +84,18 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.loaded = true;
     });
 
-    this.detectMovement();
   }
 
-  ngOnDestroy(): void 
-  {
+  ngOnDestroy(): void {
     this.subsDatabase.unsubscribe();
     this.subsMovement.unsubscribe();
   }
 
-  ionViewWillLeave () { //Poner equivalente al entrar
+  ionViewDidEnter() {
+    this.detectMovement();
+  }
+
+  ionViewWillLeave () {
     this.subsMovement.unsubscribe();
   }
 
@@ -108,15 +111,30 @@ export class ProfilePage implements OnInit, OnDestroy {
       console.log(`Acelerómetro: X: ${this.accelerationX} Y: ${this.accelerationY} Z: ${this.accelerationZ}`);
 
       if (acceleration.x > 5) {
-        this.scrollUp();//Poner anti rebote
+        this.posicionActualCelular = 'izquierda';
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollUp();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
       }
       else if (acceleration.x < -5) {
-        this.scrollDown();
+        this.posicionActualCelular = 'derecha';
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollDown();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
       }
-      else if (acceleration.z >= 9 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1)) {
-        this.scrollTop();
+      else if (acceleration.y >= 8) {
+        this.posicionAnteriorCelular = this.posicionActualCelular;
+        this.posicionActualCelular = 'parado';
       }
-      //console.log('Actual: ' + this.posicionActualCelular + ' Anterior: ' + this.posicionAnteriorCelular);
+      else if (acceleration.z >= 8 && (acceleration.y >= -1 && acceleration.y <= 1) && (acceleration.x >= -1 && acceleration.x <= 1)) {
+        this.posicionActualCelular = 'acostado';
+        if (this.posicionActualCelular != this.posicionAnteriorCelular) {
+          this.scrollTop();
+          this.posicionAnteriorCelular = this.posicionActualCelular;
+        }
+      }
     });
   }
 

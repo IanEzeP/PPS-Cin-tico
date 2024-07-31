@@ -28,7 +28,7 @@ export class CamaraPage implements OnInit {
     let finish = false;
 
     do {
-      const image = await Camera.getPhoto({ //Camera.pickImages() elegir varias desde la galería
+      const image = await Camera.getPhoto({
         quality: 100,
         promptLabelHeader: 'Seleccione una opción',
         promptLabelPhoto: 'Elegir desde la galería',
