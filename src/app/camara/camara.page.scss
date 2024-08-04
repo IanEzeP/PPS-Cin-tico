@@ -4,14 +4,14 @@
 }
 
 ion-content {
-    --background: var(--ion-color-tertiary);
+    --background: var(--ion-color-dark);
     --overflow: hidden;
 }
 
 ion-button.camaraL {
     display: block;
     height: 40%;
-    text-transform: initial;
+    //text-transform: initial;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     margin-bottom: 4%;
@@ -21,17 +21,17 @@ ion-button.camaraL {
 
 
     //--background: var(--ion-color-light);
-    --background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../../assets/sillon.jpg) no-repeat center center / cover;
+    --background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../../assets/depto2.jpg) no-repeat center center / cover;
     --box-shadow: none;
 
-    border: 3px solid var(--ion-color-primary);
-    border-radius: 5px;
+    border: 5px solid var(--ion-color-warning);
+    border-radius: 10px;
 }
 
 ion-button.camaraF {
     display: block;
     height: 40%;
-    text-transform: initial;
+    //text-transform: initial;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     margin-bottom: 4%;
@@ -43,8 +43,8 @@ ion-button.camaraF {
     --background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../../assets/humedades.jpg) no-repeat center center / cover;
     --box-shadow: none;
 
-    border: 3px solid var(--ion-color-primary);
-    border-radius: 5px;
+    border: 5px solid var(--ion-color-warning);
+    border-radius: 10px;
 }
 
 div.menu {

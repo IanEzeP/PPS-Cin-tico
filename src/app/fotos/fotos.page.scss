@@ -1,10 +1,10 @@
 ion-content {
-  --background: var(--ion-color-tertiary);
+  --background: var(--ion-color-dark);
 }
 
 ion-skeleton-text.button {
   width: 30%;
-  --background: rgba(255, 145, 0, 0.952);
+  --background: rgba(148, 28, 28, 0.952);
   --background-rgb: 255,145,0;
 }
 

@@ -1,26 +1,26 @@
-<ion-toolbar color="primary">
+<ion-toolbar color="tertiary">
   <ion-button class="logout" aria-label="Logout" (click)="this.cerrarSesion()">
-    <ion-icon aria-hidden="true" name="log-out-outline" size="large"></ion-icon>
+    <ion-icon aria-hidden="true" name="log-out-sharp" size="large"></ion-icon>
   </ion-button>
   <h1>{{ this.seccion }}</h1>
 </ion-toolbar>
 
 <ion-tabs>
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="camara" href="/menu/camara" (click)="this.cambioTab('Cámara')">
-      <ion-icon aria-hidden="true" name="camera" size="large"></ion-icon>
+    <ion-tab-button tab="graficos" href="/menu/graficos" (click)="this.cambioTab('Calificación')">
+      <ion-icon aria-hidden="true" name="podium-sharp" size="large"></ion-icon>
     </ion-tab-button>
 
     <ion-tab-button tab="fotos" href="/menu/fotos" (click)="this.cambioTab('Fotos')">
-      <ion-icon aria-hidden="true" name="images" size="large"></ion-icon>
+      <ion-icon aria-hidden="true" name="images-sharp" size="large"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="graficos" href="/menu/graficos" (click)="this.cambioTab('Calificación')">
-      <ion-icon aria-hidden="true" name="podium" size="large"></ion-icon>
-    </ion-tab-button>
+    <ion-tab-button tab="profile" href="/menu/profile" (click)="this.cambioTab('Mi Galería')">
+      <ion-icon aria-hidden="true" name="id-card-sharp" size="large"></ion-icon>
+    </ion-tab-button>    
 
-    <ion-tab-button tab="profile" href="/menu/profile" (click)="this.cambioTab('Mis fotos')">
-      <ion-icon aria-hidden="true" name="id-card" size="large"></ion-icon>
+    <ion-tab-button tab="camara" href="/menu/camara" (click)="this.cambioTab('Cámara')">
+      <ion-icon aria-hidden="true" name="camera-sharp" size="large"></ion-icon>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

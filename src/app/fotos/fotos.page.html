@@ -28,10 +28,10 @@
 
         <img src="{{ imagen.imagen }}" style="margin: auto; display: block;" width="380" height="535" />
 
-        <ion-button fill="clear" aria-label="voto" (click)="this.onVotar(imagen)">
+        <ion-button color="danger" fill="clear" aria-label="voto" (click)="this.onVotar(imagen)">
           <div *ngIf="imagen.votantes.includes(this.auth.id) == true, then votado else noVotado"></div>
-            <ng-template #votado><ion-icon aria-hidden="true" name="star" size="large"></ion-icon></ng-template>
-            <ng-template #noVotado><ion-icon aria-hidden="true" name="star-outline" size="large"></ion-icon></ng-template>
+            <ng-template #votado><ion-icon aria-hidden="true" name="heart" size="large"></ion-icon></ng-template>
+            <ng-template #noVotado><ion-icon aria-hidden="true" name="heart-outline" size="large"></ion-icon></ng-template>
           <ion-label style="padding-left: 0.5rem;">{{ imagen.votos }} votos</ion-label>
         </ion-button>
         
